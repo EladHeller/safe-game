@@ -1,0 +1,35 @@
+.keypadGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.key {
+  aspect-ratio: 1;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #000;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.key:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #000;
+}
+
+.key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auxKey {
+  color: var(--accent-gold);
+}
