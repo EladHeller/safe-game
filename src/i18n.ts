@@ -1,44 +1,71 @@
-export const translations = {
-  en: {
-    title: "SAFE BREAKER",
-    subtitle: "MEMORIZE THE CODE • CRACK THE VAULT",
-    ready: "READY",
-    accessGranted: "ACCESS GRANTED",
-    denied: "DENIED",
-    safeBreached: "SAFE BREACHED",
-    jackpot: "Jackpot secured",
-    startBreach: "START BREACH",
-    tryAgain: "TRY AGAIN",
-    continue: "CONTINUE",
-    level: "LEVEL",
-    lives: "LIVES",
-    gameOver: "VAULT LOCKED",
-    restart: "RESTART MISSION",
-    missionComplete: "MISSION COMPLETE!"
-  },
-  he: {
-    title: "פורץ הכספות",
-    subtitle: "זכור את הקוד • פרוץ את הכספת",
-    ready: "מוכן",
-    accessGranted: "גישה אושרה",
-    denied: "הגישה נדחתה",
-    safeBreached: "הכספת נפרצה",
-    jackpot: "השלל בידינו",
-    startBreach: "התחל פריצה",
-    tryAgain: "נסה שוב",
-    continue: "המשך",
-    level: "שלב",
-    lives: "חיים",
-    gameOver: "הכספת ננעלה",
-    restart: "התחל מחדש",
-    missionComplete: "המשימה הושלמה!"
-  }
+export type TranslationKeys = {
+  title: string;
+  subtitle: string;
+  ready: string;
+  accessGranted: string;
+  denied: string;
+  safeBreached: string;
+  jackpot: string;
+  startBreach: string;
+  tryAgain: string;
+  continue: string;
+  level: string;
+  lives: string;
+  gameOver: string;
+  restart: string;
+  missionComplete: string;
+  victoryTitle: string;
+  levelComplete: string;
+  victoryMessage: string;
+  continueMessage: string;
 };
 
-export type Language = 'en' | 'he';
-export type TranslationKeys = typeof translations.en;
+export const translations: { [key: string]: TranslationKeys } = {
+  en: {
+    title: 'THE VAULT HEIST',
+    subtitle: 'A High-Stakes Memory Challenge',
+    ready: 'SYSTEM READY',
+    accessGranted: 'ACCESS GRANTED',
+    denied: 'ACCESS DENIED',
+    safeBreached: 'SAFE BREACHED!',
+    jackpot: 'JACKPOT!',
+    startBreach: 'START BREACH',
+    tryAgain: 'TRY AGAIN',
+    continue: 'CONTINUE',
+    level: 'LEVEL',
+    lives: 'LIVES',
+    gameOver: 'GAME OVER',
+    restart: 'RESTART MISSION',
+    missionComplete: 'MISSION COMPLETE',
+    victoryTitle: "YOU'RE A LEGEND!",
+    levelComplete: "VAULT BREACHED!",
+    victoryMessage: "You've cracked the World Reserve. The legends are true.",
+    continueMessage: "Proceed to the next vault."
+  },
+  he: {
+    title: 'שוד הכספות',
+    subtitle: 'אתגר זיכרון בקנה מידה גדול',
+    ready: 'המערכת מוכנה',
+    accessGranted: 'גישה אושרה',
+    denied: 'גישה נדחתה',
+    safeBreached: 'הכספת נפרצה!',
+    jackpot: 'זכית בקופה!',
+    startBreach: 'התחל בפריצה',
+    tryAgain: 'נסה שוב',
+    continue: 'המשך',
+    level: 'שלב',
+    lives: 'חיים',
+    gameOver: 'המשחק נגמר',
+    restart: 'התחל משימה מחדש',
+    missionComplete: 'המשימה הושלמה',
+    victoryTitle: "אתה אגדה!",
+    levelComplete: "הכספת נפרצה!",
+    victoryMessage: "פרצת את הכספת העולמית. האגדות נכונות.",
+    continueMessage: "המשך לכספת הבאה."
+  },
+};
 
-export const getLanguage = (): Language => {
-  const lang = navigator.language || (navigator as any).userLanguage;
-  return lang.startsWith('he') ? 'he' : 'en';
+export const getLanguage = (): 'en' | 'he' => {
+    const lang = navigator.language.split('-')[0];
+    return lang === 'he' ? 'he' : 'en';
 };

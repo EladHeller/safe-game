@@ -3,6 +3,12 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   width: 100%;
+  transition: all 0.3s ease;
+}
+
+.alphanumeric {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 .key {
@@ -20,6 +26,11 @@
   transition: transform 0.1s, box-shadow 0.1s;
 }
 
+.alphanumeric .key {
+  font-size: 16px;
+}
+
+
 .key:active:not(:disabled) {
   transform: translateY(2px);
   box-shadow: 0 2px 0 #000;
@@ -32,4 +43,8 @@
 
 .auxKey {
   color: var(--accent-gold);
+}
+
+.delKey {
+  color: var(--error-red);
 }

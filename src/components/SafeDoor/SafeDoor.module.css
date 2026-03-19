@@ -49,6 +49,7 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  transform-origin: left; /* Set the hinge to the left side */
   z-index: 10;
 }
 
@@ -78,10 +79,10 @@
 }
 
 .doorHandle {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   position: absolute;
-  right: 40px;
+  right: 25px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -90,12 +91,12 @@
 }
 
 .handleWheel {
-  width: 80px;
-  height: 80px;
-  border: 8px solid var(--accent-gold);
+  width: 70px;
+  height: 70px;
+  border: 6px solid var(--accent-gold);
   border-radius: 50%;
   position: relative;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 .handleWheel::before,
@@ -107,24 +108,24 @@
 
 .handleWheel::before {
   width: 100%;
-  height: 8px;
-  top: calc(50% - 4px);
+  height: 6px;
+  top: calc(50% - 3px);
 }
 
 .handleWheel::after {
-  width: 8px;
+  width: 6px;
   height: 100%;
-  left: calc(50% - 4px);
+  left: calc(50% - 3px);
 }
 
 .doorPanel {
-  width: 280px;
+  width: 250px;
   background: #111;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
   border: 4px solid var(--safe-border);
   box-shadow: inset 0 0 20px rgba(0,0,0,1);
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .statusLight {
@@ -159,34 +160,30 @@
 }
 
 .alarmOverlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(255, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(255,0,0,0.5) 0%,rgba(255,0,0,0) 70%);
   pointer-events: none;
-  animation: pulse 0.5s infinite;
+  animation: localPulse 0.5s infinite alternate;
+  z-index: 5; /* Position it on the door face */
 }
 
-@keyframes pulse {
-  0% { background: rgba(255, 0, 0, 0.1); }
-  50% { background: rgba(255, 0, 0, 0.3); }
-  100% { background: rgba(255, 0, 0, 0.1); }
+@keyframes localPulse {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
 }
 
 .alarmShake {
-  animation: shake 0.5s ease-in-out infinite;
+  animation: shake 0.5s ease-in-out;
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px) rotate(-1deg); }
-  75% { transform: translateX(10px) rotate(1deg); }
+  0%, 100% { transform: translateX(0) scale(min(1, calc((100vh - 200px) / 600))); }
+  25% { transform: translateX(-5px) rotate(-0.5deg) scale(min(1, calc((100vh - 200px) / 600))); }
+  75% { transform: translateX(5px) rotate(0.5deg) scale(min(1, calc((100vh - 200px) / 600))); }
 }
 
 @media (max-width: 500px) {
@@ -196,15 +193,24 @@
     transform: scale(min(1, calc((100vh - 200px) / 500)));
   }
   .doorPanel {
-    width: 220px;
+    width: 200px;
     padding: 10px;
   }
   .doorHandle {
-    right: 20px;
-    width: 80px;
+    right: 15px;
+    width: 60px;
   }
   .handleWheel {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+    border-width: 4px;
+  }
+  .handleWheel::before {
+    height: 4px;
+    top: calc(50% - 2px);
+  }
+  .handleWheel::after {
+    width: 4px;
+    left: calc(50% - 2px);
   }
 }

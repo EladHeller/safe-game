@@ -9,10 +9,13 @@ interface DisplayProps {
   code: string;
   input: string;
   timeLeft: number;
+  totalTime: number;
+  intensity: number;
+  safeName: string;
   t: TranslationKeys;
 }
 
-const Display: React.FC<DisplayProps> = ({ status, code, input, timeLeft, t }) => {
+const Display: React.FC<DisplayProps> = ({ status, code, input, timeLeft, totalTime, intensity, safeName, t }) => {
   const renderContent = () => {
     switch (status) {
       case 'IDLE':
@@ -20,12 +23,17 @@ const Display: React.FC<DisplayProps> = ({ status, code, input, timeLeft, t }) =
       case 'DISPLAYING':
         return (
           <>
-            <Distraction />
+            <Distraction intensity={intensity} />
             <span className={styles.code}>{code}</span>
           </>
         );
       case 'INPUTTING':
-        return <span className={styles.input}>{input.padEnd(code.length, '_')}</span>;
+        return (
+          <>
+            {intensity >= 2 && <Distraction intensity={intensity - 1} />}
+            <span className={styles.input}>{input.padEnd(code.length, '_')}</span>
+          </>
+        );
       case 'SUCCESS':
       case 'VICTORY':
         return <span className={styles.success}>{t.accessGranted}</span>;
@@ -40,6 +48,9 @@ const Display: React.FC<DisplayProps> = ({ status, code, input, timeLeft, t }) =
 
   return (
     <div className={styles.displayContainer}>
+      <div className={styles.safeInfo}>
+        <span className={styles.safeName}>{safeName.replace('_', ' ')}</span>
+      </div>
       <div className={styles.screen}>
         <motion.div 
           key={status}
@@ -50,13 +61,13 @@ const Display: React.FC<DisplayProps> = ({ status, code, input, timeLeft, t }) =
           {renderContent()}
         </motion.div>
       </div>
-      {status === 'DISPLAYING' && (
+      {(status === 'DISPLAYING' || status === 'INPUTTING') && (
         <div className={styles.timerBar}>
           <motion.div 
-            className={styles.timerProgress}
+            className={`${styles.timerProgress} ${status === 'INPUTTING' ? styles.inputTimer : ''}`}
             initial={{ width: '100%' }}
-            animate={{ width: `${(timeLeft / 5) * 100}%` }}
-            transition={{ ease: 'linear' }}
+            animate={{ width: `${(timeLeft / totalTime) * 100}%` }}
+            transition={{ ease: 'linear', duration: 0.1 }}
           />
         </div>
       )}

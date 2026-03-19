@@ -5,29 +5,44 @@ export const useSound = () => {
 
   const initCtx = () => {
     if (!audioCtx.current) {
-      audioCtx.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      try {
+        const AudioContextClass = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!AudioContextClass) {
+          throw new Error('Web Audio API is not supported in this browser');
+        }
+        audioCtx.current = new AudioContextClass();
+      } catch (error: unknown) {
+        console.warn("Web Audio API is not supported in this browser", error);
+      }
     }
   };
 
-  const playClick = useCallback(() => {
+  const playSound = useCallback((type: OscillatorType, freq: number, duration: number, volume: number, ramp: 'linear' | 'exponential' = 'exponential') => {
     initCtx();
     if (!audioCtx.current) return;
     const osc = audioCtx.current.createOscillator();
     const gain = audioCtx.current.createGain();
     
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(150, audioCtx.current.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.current.currentTime + 0.1);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.current.currentTime);
     
-    gain.gain.setValueAtTime(0.1, audioCtx.current.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.current.currentTime + 0.1);
+    gain.gain.setValueAtTime(volume, audioCtx.current.currentTime);
+    if (ramp === 'exponential') {
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.current.currentTime + duration);
+    } else {
+      gain.gain.linearRampToValueAtTime(0, audioCtx.current.currentTime + duration);
+    }
     
     osc.connect(gain);
     gain.connect(audioCtx.current.destination);
     
     osc.start();
-    osc.stop(audioCtx.current.currentTime + 0.1);
+    osc.stop(audioCtx.current.currentTime + duration);
   }, []);
+
+  const playClick = useCallback(() => {
+    playSound('triangle', 220, 0.1, 0.2);
+  }, [playSound]);
 
   const playSuccess = useCallback(() => {
     initCtx();
@@ -40,7 +55,7 @@ export const useSound = () => {
       const gain = audioCtx.current!.createGain();
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, now + i * 0.1);
-      gain.gain.setValueAtTime(0.1, now + i * 0.1);
+      gain.gain.setValueAtTime(0.15, now + i * 0.1);
       gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
       osc.connect(gain);
       gain.connect(audioCtx.current!.destination);
@@ -50,43 +65,32 @@ export const useSound = () => {
   }, []);
 
   const playFailure = useCallback(() => {
+    playSound('sawtooth', 110, 0.5, 0.15, 'linear');
+  }, [playSound]);
+  
+  const playStageStart = useCallback(() => {
     initCtx();
     if (!audioCtx.current) return;
     const now = audioCtx.current.currentTime;
-    const osc = audioCtx.current.createOscillator();
-    const gain = audioCtx.current.createGain();
+    const notes = [261.63, 392.00, 523.25]; // C4, G4, C5
     
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(110, now);
-    osc.frequency.linearRampToValueAtTime(55, now + 0.5);
-    
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.linearRampToValueAtTime(0, now + 0.5);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.current.destination);
-    
-    osc.start();
-    osc.stop(now + 0.5);
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.current!.createOscillator();
+      const gain = audioCtx.current!.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.12);
+      gain.gain.setValueAtTime(0.1, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.2);
+      osc.connect(gain);
+      gain.connect(audioCtx.current!.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.2);
+    });
   }, []);
 
   const playTick = useCallback(() => {
-    initCtx();
-    if (!audioCtx.current) return;
-    const osc = audioCtx.current.createOscillator();
-    const gain = audioCtx.current.createGain();
-    
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(880, audioCtx.current.currentTime);
-    gain.gain.setValueAtTime(0.05, audioCtx.current.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.current.currentTime + 0.05);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.current.destination);
-    
-    osc.start();
-    osc.stop(audioCtx.current.currentTime + 0.05);
-  }, []);
+    playSound('square', 880, 0.05, 0.03);
+  }, [playSound]);
 
-  return { playClick, playSuccess, playFailure, playTick };
+  return { playClick, playSuccess, playFailure, playStageStart, playTick };
 };

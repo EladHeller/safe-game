@@ -1,6 +1,6 @@
 .game-container {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,8 +33,10 @@
 .game-stats {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 5px;
+  align-items: center;
 }
 
 .stat-badge {
@@ -44,9 +46,127 @@
   border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  font-size: 0.8rem;
+  flex: 0 1 auto;
+  min-width: 120px;
+  justify-content: center;
 }
 
+.high-score-badge {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.score-badge {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--accent-gold);
+}
+.main-layout {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  align-items: center;
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hacking-log {
+  flex: 0 0 200px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--success-green);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.05);
+  text-align: left;
+}
+
+.log-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.log-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-entry {
+  opacity: 0.8;
+  animation: logFadeIn 0.3s ease-out forwards;
+}
+
+.cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes logFadeIn {
+  from { opacity: 0; transform: translateX(-5px); }
+  to { opacity: 0.8; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(212, 175, 55, 0); }
+  50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+    padding: 10px;
+  }
+  .hacking-log {
+    width: 100%;
+    flex: none;
+    min-height: 100px;
+    order: 2;
+  }
+  .game-stats {
+    gap: 8px;
+  }
+  .stat-badge {
+    flex: 1 1 45%;
+    min-width: 110px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+  .stat-badge.lives {
+    justify-content: center;
+  }
+  .game-controls {
+    width: 100%;
+    padding: 0 10px;
+  }
+  .btn-primary, .btn-secondary {
+    justify-content: center;
+  }
+}
 .stat-badge .label {
   font-size: 0.7rem;
   color: var(--text-secondary);
@@ -104,6 +224,21 @@
   background: rgba(255,255,255,0.05);
   color: var(--text-primary);
   border-color: var(--text-primary);
+}
+
+@media (max-width: 520px) {
+  .game-header h1 {
+    letter-spacing: 0.35rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .game-header h1 {
+    letter-spacing: 0.25rem;
+  }
+  .stat-badge {
+    min-width: 100px;
+  }
 }
 
 @media (max-height: 700px) {
